@@ -114,10 +114,13 @@ for i, ps in enumerate(params_grid):
     for est in range(len(n_estimator)):
         results.loc[index, 'estimator_split'+str(split)] = n_estimator[est]
         split = split + 1
+    
     results.loc[index, 'mean_n_estimator'] = mean_n_estimator
     results.loc[index, 'mean_train_score'] = mean_train_score
     results.loc[index, 'mean_val_score'] = mean_val_score
+    
     results.to_parquet(path, compression='gzip')
     index = index + 1
+    
     print(f"Average Train Score: {mean_train_score}")
     print(f"Average Validation Score: {mean_val_score}")
