@@ -17,7 +17,7 @@ from joblib import Parallel, delayed
 
 
 class CrossValidator:
-    def __init__(self, estimator, scoring: List[str]='roc_auc', n_splits: int=5, early_stop: bool=False):
+    def __init__(self, estimator, scoring: List[str]=['roc_auc'], n_splits: int=5, early_stop: bool=False):
         self.estimator = estimator
         self.scoring = scoring
         self.n_splits = n_splits
@@ -63,7 +63,7 @@ class Search:
                  n_splits: int=5, early_stop: bool=False):
         
         self.estimator = estimator
-        self.param_grid = param_grid
+        self.param_grid = ParameterGrid(param_grid)
         self.scoring = scoring
         self.n_splits = n_splits
         self.path = path
@@ -88,12 +88,11 @@ class Search:
 
     def grid_search(self, X: np.ndarray, y: np.ndarray):
         cv = CrossValidator(self.estimator, n_splits=self.n_splits, scoring=self.scoring, early_stop=self.early_stop)
-        params_grid = ParameterGrid(self.param_grid)
-        for i, ps in enumerate(params_grid):
+        for i, ps in enumerate(self.params_grid):
             if self.restart and i <= self.index_aux:
                 continue
 
-            print(f"Evaluating parameter set {i + 1}/{len(params_grid)}: {ps}")
+            print(f"Evaluating parameter set {i + 1}/{len(self.param_grid)}: {ps}")
             self.estimator.set_params(**ps)
             result_dict = ps.copy()
 
